@@ -1,0 +1,57 @@
+﻿
+//Reads file and returns content
+
+function readFile(fileName){
+
+	var response ="";
+
+	var req = new ActiveXObject("Microsoft.XMLHTTP");
+	req.onreadystatechange = function(){
+		if(req.readyState == 4){
+			if(req.responseText == ""){
+			alert("Not able to read from file: " + fileName);
+			}
+			else{
+			//process(req.responseText,fileName);
+			response = req.responseText;
+			
+			}
+		}
+	}
+
+	req.open("GET", fileName, true);
+	req.send(null);
+	return response;
+}
+
+//Converts string to date object
+
+function makeDate(dateStr){
+	var dt1 = parseInt(dateStr.substring(0,2));
+	var mo1 = parseInt(dateStr.substring(4,6));
+	var yr1 = parseInt(dateStr.substring(6,10));
+	var d = new Date(yr1,mo1-1,dt1);
+
+return d;
+}
+
+
+//Look for timezones and return true or false
+function timeSpanPresent(rawData){
+	if(rawData.indexOf("Time Zones") == -1){
+	return false;
+	}
+	else{
+	return true;
+	}
+}
+
+//extract timezones
+function getTimeZones(rawData){
+
+
+
+}
+
+
+

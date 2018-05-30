@@ -1,0 +1,110 @@
+﻿<html>
+
+	<head>
+		<title>ATN dataReader</title>
+		<meta charset="utf-8"/>
+		<script type="text/javascript" src="Utils.js"></script>
+		<link rel="stylesheet" type="text/css" href="StyleSheet.css"/>
+
+	</head>
+	<body>
+		<div id="Contents">
+			<div id="Header">
+			<p class="header">ATN dataReader</p>
+			<hr>
+			<p id="VersionLabel">Version: </p>
+			<p id="TimespanLabel">Timespan: </p>
+			<hr>
+			<div id="PlanList"></div>
+			</div>
+
+
+		</div>
+
+
+	</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+// Gloabal variables
+var configObject = new Object();
+var configFile = "TTCONFIG.DAT";
+
+
+setupConfig();
+
+
+// Setting up the config object 
+function setupConfig(){
+
+var rawContent = readFile(configFile);
+var timespan = timeSpanPresent(rawContent);
+var dDates;
+	if(timeSpanPresent(rawContent)){
+		dDates = getTimeZones(rawContent);
+	}
+	else{
+		dDates = "Not defined in DAT file";
+	}
+
+var obj = {
+	version: getVersion(rawContent),
+	timespan: dDates,
+	plans: getPlans(rawContent)
+	};
+
+configObject = obj;
+
+showConfig()
+}
+
+
+
+function showConfig(){
+
+var versionLbl = document.getElementById("VersionLabel");
+var timespanLbl = document.getElementById("TimespanLabel");
+var planList = document.getElementById("PlanList");
+
+versionLbl.innerHTML += configObject.version;
+
+var day1 = configObject.timespan[0];
+var day2 = configObject.timespan[configObject.timespan.length-1];
+timespanLbl.innerHTML += day1.toLocaleDateString() + " to " + day2.toLocaleDateString();
+
+for(var i = 0; i < configObject.plans.length; i++){
+	planList.innerHTML += "<strong>" + configObject.plans[i].name + "</strong><br>";
+	planList.innerHTML +="Days:<br>";
+		for(var j = 0; j < configObject.plans[i].dates[j]; j++){
+			planList.innerHTML += "&nbsp;&nbsp;&nbsp;&nbsp;" + getWeekDay(configObject.plans[i].dates[j]) + "<br>";
+		}
+	planList.innerHTML +="<br><br><hr>";
+
+	}
+var l = readFile("TEST.PTH");
+planList.innerHTML += getTrains("TAL01.TRP");
+}
+
+
+
+
+</script>
+
+
+
+</html>

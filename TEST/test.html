@@ -1,0 +1,129 @@
+﻿<html>
+<head>
+<title>Test</title>
+
+<style>
+.planMenuBtn{
+	width: 120px;
+	float: right;
+}
+
+
+</style>
+</head>
+<body>
+
+<div id="output" style="background: #cccccc; border: 1px solid #000000; width: 500px;">
+<span id="Version">Version:&nbsp;</span><br>
+<span id="Plans"></span>
+<div id ="PlanMenu"></div>
+</div>
+
+</body>
+
+
+
+<script>
+
+var configObject = new Object();
+
+//Reads file and send it to process
+
+function readFile(fileName){
+
+	var FileName = fileName;
+
+	var req = new ActiveXObject("Microsoft.XMLHTTP");
+	req.onreadystatechange = function(){
+		if(req.readyState == 4){
+			if(req.responseText == ""){
+			alert("Not able to read from file: " + FileName);
+			}
+			else{
+			process(req.responseText,FileName);
+			}
+		}
+	}
+
+	req.open("GET", fileName, true);
+	req.send(null);
+}
+
+
+//processes files sent from readfile function
+
+function process(content,name){
+
+//get file destinction
+
+var fileType = name.slice(name.length-3,name.length);
+	if(fileType == "DAT"){
+		setConfig(content);
+	}
+	else{
+	alert("not a config file...");
+	}
+}
+
+
+function setConfig(configContent){
+	
+//Reference labels in document.
+
+	var versionLbl = document.getElementById("Version");
+	var plansStr = document.getElementById("Plans");
+	var planMenu = document.getElementById("PlanMenu");
+
+//Defining a logical storage for configuration data as Object
+	var configObj = {
+		version: configContent.slice(configContent.indexOf("\n")+2, configContent.indexOf("*")-1),
+		plans: []
+
+	};
+
+	configObject = configObj;
+
+//split configuration data into sections	
+
+	var plans = configContent.split("***");
+	
+	
+	plansStr.innerHTML = "Following plans identified:<br><hr>";
+
+//Trace out all the different plans in the configuration data 
+
+	for(var i = 1; i < plans.length; i+=2){
+		
+		var planObj = {
+			name: plans[i],
+			dates: [1,2,5],
+			tripFile: plans[i+1].slice(plans[i+1].indexOf("TRIP_FILES:")+11,plans[i+1].indexOf("TRP")+3)
+		};
+	
+	var planBtn = document.createElement("button");
+	planBtn.innerHTML = planObj.tripFile;
+	planBtn.setAttribute("class","planMenuBtn");
+	planMenu.innerHTML += plans[i];
+	planMenu.appendChild(planBtn);
+	planMenu.innerHTML += "<br><hr>";
+	configObject.plans.push(planObj);
+		
+	}
+
+
+
+
+	
+	versionLbl.innerHTML += configObject.version;
+	
+	
+	
+}
+
+readFile("TTCONFIG.DAT");
+
+</script>
+
+
+
+</html>
