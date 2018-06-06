@@ -29,18 +29,32 @@ function makeStopObject(stopData) {
 }
 
 function makePathObject(pathData){
-    
 
+    pathData = pathData.replace(/(\n)/g,"$1**");
+    var stops = pathData.split("**");
+    var stopArray = [];
 
-    console.log(pathData);
+    var l = stops.length;
+    for(var i = 1; i < l; i++){
+        stopArray.push(makeStopObject(stops[i]));
+    }
+
+    var obj = {
+        id: stops[0].slice(0,4),
+        stops: stopArray
+    };
+
+    //console.log(obj.stops[0]);
+    return obj;
 }
 
 function getPaths(pathsData){
 var paths = pathsData.split("PATH:");
 var l = paths.length;
-for(var i = 1; i < l; i++){
-    var path = makePathObject(paths[i].trim());
-}
+makePathObject(paths[1].trim());
+//for(var i = 1; i < l; i++){
+  //  var path = makePathObject(paths[i].trim());
+//}
 
 }
 
